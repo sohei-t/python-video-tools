@@ -14,6 +14,7 @@
 | [frame-extractor](./frame-extractor/) | 動画から指定間隔で静止画を抽出するツール |
 | [audio-remover](./audio-remover/) | 動画から音声トラックを除去するツール |
 | [image-combiner](./image-combiner/) | 複数画像を横並び・縦並びで1枚に結合するツール |
+| [video-speed-changer](./video-speed-changer/) | 動画の再生速度・フレームレート変更ツール |
 
 ## 必要条件
 
