@@ -8,6 +8,7 @@
 |-------------|------|
 | [video-segment-tools](./video-segment-tools/) | 動画の切り出し・分割・結合ツール |
 | [video-grid-composer](./video-grid-composer/) | 複数動画の横並び・縦並び・グリッド結合ツール |
+| [video-compressor](./video-compressor/) | 動画ファイルサイズ縮小ツール |
 
 ## 必要条件
 
