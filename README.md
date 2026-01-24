@@ -15,6 +15,7 @@
 | [audio-remover](./audio-remover/) | 動画から音声トラックを除去するツール |
 | [image-combiner](./image-combiner/) | 複数画像を横並び・縦並びで1枚に結合するツール |
 | [video-speed-changer](./video-speed-changer/) | 動画の再生速度・フレームレート変更ツール |
+| [video-overlay](./video-overlay/) | 動画に画像・動画をオーバーレイ合成するツール |
 
 ## 必要条件
 
@@ -23,6 +24,7 @@
 - OpenCV, NumPy（video-grid-composer, face-cropper用）
 - dlib（face-cropper用）
 - Pillow（image-combiner用）
+- moviepy（video-overlay用）
 
 ## ライセンス
 
