@@ -16,6 +16,7 @@
 | [image-combiner](./image-combiner/) | 複数画像を横並び・縦並びで1枚に結合するツール |
 | [video-speed-changer](./video-speed-changer/) | 動画の再生速度・フレームレート変更ツール |
 | [video-overlay](./video-overlay/) | 動画に画像・動画をオーバーレイ合成するツール |
+| [video-player](./video-player/) | Webブラウザベースの動画プレイヤー |
 
 ## 必要条件
 
@@ -25,6 +26,7 @@
 - dlib（face-cropper用）
 - Pillow（image-combiner用）
 - moviepy（video-overlay用）
+- Flask（video-player用）
 
 ## ライセンス
 
