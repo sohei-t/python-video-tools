@@ -13,6 +13,7 @@
 | [audio-extractor](./audio-extractor/) | 動画から音声を抽出してMP3に変換するツール |
 | [frame-extractor](./frame-extractor/) | 動画から指定間隔で静止画を抽出するツール |
 | [audio-remover](./audio-remover/) | 動画から音声トラックを除去するツール |
+| [image-combiner](./image-combiner/) | 複数画像を横並び・縦並びで1枚に結合するツール |
 
 ## 必要条件
 
@@ -20,6 +21,7 @@
 - ffmpeg（video-segment-tools, video-compressor用）
 - OpenCV, NumPy（video-grid-composer, face-cropper用）
 - dlib（face-cropper用）
+- Pillow（image-combiner用）
 
 ## ライセンス
 
