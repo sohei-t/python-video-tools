@@ -103,6 +103,14 @@ python video_speed_changer.py video.mp4 --speed 0.5 --audio copy
 python video_speed_changer.py video_60fps.mp4 --speed 0.5 --fps 30
 ```
 
+### 30fps → 60fps 倍速変換
+
+30fpsで撮影した動画を60fpsで2倍速にすると、滑らかな高速再生映像になります。
+
+```bash
+python video_speed_changer.py video_30fps.mp4 --speed 2.0 --fps 60
+```
+
 ### タイムラプス作成
 
 長時間の動画を高速再生してタイムラプス風にできます。
