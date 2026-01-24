@@ -11,6 +11,7 @@
 | [video-compressor](./video-compressor/) | 動画ファイルサイズ縮小ツール |
 | [face-cropper](./face-cropper/) | 画像から顔を検出・切り出し＆スライドショー作成ツール |
 | [audio-extractor](./audio-extractor/) | 動画から音声を抽出してMP3に変換するツール |
+| [frame-extractor](./frame-extractor/) | 動画から指定間隔で静止画を抽出するツール |
 
 ## 必要条件
 
