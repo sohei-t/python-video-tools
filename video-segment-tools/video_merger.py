@@ -77,9 +77,7 @@ def merge_videos_concat_demuxer(
     output_file: Path,
 ) -> bool:
     """concat demuxerを使用して動画を結合（高速、同一形式のみ）"""
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".txt", delete=False
-    ) as list_file:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as list_file:
         for video in video_files:
             # シングルクォートをエスケープ
             escaped_path = str(video.absolute()).replace("'", "'\\''")
@@ -90,10 +88,14 @@ def merge_videos_concat_demuxer(
         cmd = [
             ffmpeg_path,
             "-y",
-            "-f", "concat",
-            "-safe", "0",
-            "-i", list_file_path,
-            "-c", "copy",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            list_file_path,
+            "-c",
+            "copy",
             str(output_file),
         ]
 
@@ -134,7 +136,8 @@ def merge_videos_filter_complex(
         ffmpeg_path,
         "-y",
         *input_args,
-        "-filter_complex", filter_str,
+        "-filter_complex",
+        filter_str,
         *output_args,
         str(output_file),
     ]
@@ -172,9 +175,7 @@ def merge_videos(
 
     # filter_complexで結合
     print("  再エンコードモードで結合中...")
-    if merge_videos_filter_complex(
-        ffmpeg_path, video_files, output_file, include_audio
-    ):
+    if merge_videos_filter_complex(ffmpeg_path, video_files, output_file, include_audio):
         return True, "再エンコードモードで結合完了"
 
     return False, "結合に失敗しました"
@@ -276,13 +277,15 @@ def main():
     )
 
     parser.add_argument(
-        "-i", "--input",
+        "-i",
+        "--input",
         type=Path,
         default=Path.cwd(),
         help="入力ディレクトリ (デフォルト: カレントディレクトリ)",
     )
     parser.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         type=Path,
         default=None,
         help="出力ファイルまたはディレクトリ",

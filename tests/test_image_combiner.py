@@ -1,20 +1,21 @@
 """Tests for image_combiner module."""
 
-import pytest
-import sys
-from pathlib import Path
-from PIL import Image
-import tempfile
 import os
+import sys
+import tempfile
+from pathlib import Path
+
+import pytest
+from PIL import Image
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "image-combiner"))
 
 from image_combiner import (
-    parse_color,
-    get_image_files,
     combine_images_horizontal,
     combine_images_vertical,
+    get_image_files,
+    parse_color,
 )
 
 

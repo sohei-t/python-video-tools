@@ -62,9 +62,7 @@ def read_config_file(file_path: Path) -> Optional[Dict]:
 
                     if key == "start_end_times":
                         time_pairs = [pair.split("-") for pair in value.split(",")]
-                        config[key] = [
-                            (start.strip(), end.strip()) for start, end in time_pairs
-                        ]
+                        config[key] = [(start.strip(), end.strip()) for start, end in time_pairs]
                     else:
                         config[key] = value
     except FileNotFoundError:
@@ -158,10 +156,14 @@ def extract_segments(
                 command = [
                     ffmpeg_path,
                     "-y",
-                    "-ss", normalized_start,
-                    "-i", str(input_file),
-                    "-to", normalized_end,
-                    "-c", "copy",
+                    "-ss",
+                    normalized_start,
+                    "-i",
+                    str(input_file),
+                    "-to",
+                    normalized_end,
+                    "-c",
+                    "copy",
                     str(output_file),
                 ]
             else:
@@ -169,11 +171,16 @@ def extract_segments(
                 command = [
                     ffmpeg_path,
                     "-y",
-                    "-i", str(input_file),
-                    "-ss", normalized_start,
-                    "-to", normalized_end,
-                    "-c:v", "libx264",
-                    "-c:a", "aac",
+                    "-i",
+                    str(input_file),
+                    "-ss",
+                    normalized_start,
+                    "-to",
+                    normalized_end,
+                    "-c:v",
+                    "libx264",
+                    "-c:a",
+                    "aac",
                     str(output_file),
                 ]
 
@@ -222,19 +229,22 @@ def main():
     )
 
     parser.add_argument(
-        "-c", "--config",
+        "-c",
+        "--config",
         type=Path,
         default=Path("config.txt"),
         help="設定ファイルのパス (デフォルト: config.txt)",
     )
     parser.add_argument(
-        "-i", "--input-dir",
+        "-i",
+        "--input-dir",
         type=Path,
         default=None,
         help="入力動画のディレクトリ (デフォルト: 設定ファイルと同じディレクトリ)",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         type=Path,
         default=None,
         help="出力ディレクトリ (デフォルト: 設定ファイルのoutput_dirまたはsegments)",
@@ -279,9 +289,7 @@ def main():
 
     # ディレクトリを設定
     input_dir = args.input_dir or config_path.parent
-    output_dir = args.output_dir or (
-        config_path.parent / config.get("output_dir", "segments")
-    )
+    output_dir = args.output_dir or (config_path.parent / config.get("output_dir", "segments"))
 
     print(f"入力ディレクトリ: {input_dir}")
     print(f"出力ディレクトリ: {output_dir}")

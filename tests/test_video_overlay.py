@@ -1,10 +1,10 @@
 """Tests for video_overlay module."""
 
-import pytest
 import sys
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
+import pytest
 
 # Define functions locally for testing to avoid moviepy dependency
 POSITIONS = {
@@ -87,7 +87,9 @@ class TestGetPositionCoords:
     def test_unknown_position_defaults_to_top_right(self):
         """Test that unknown position defaults to top-right."""
         x, y = get_position_coords("unknown", (1920, 1080), (100, 100), margin=10)
-        expected_x, expected_y = get_position_coords("top-right", (1920, 1080), (100, 100), margin=10)
+        expected_x, expected_y = get_position_coords(
+            "top-right", (1920, 1080), (100, 100), margin=10
+        )
         assert x == expected_x
         assert y == expected_y
 

@@ -1,13 +1,14 @@
 """Tests for frame_extractor module."""
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "frame-extractor"))
 
-from frame_extractor import parse_time, parse_range, parse_ranges, format_time
+from frame_extractor import format_time, parse_range, parse_ranges, parse_time
 
 
 class TestParseTime:

@@ -66,7 +66,7 @@ def crop_face(
     new_w = min(w + 2 * margin_w, image.shape[1] - new_x)
     new_h = min(h + 2 * margin_h, image.shape[0] - new_y)
 
-    return image[new_y:new_y + new_h, new_x:new_x + new_w]
+    return image[new_y : new_y + new_h, new_x : new_x + new_w]
 
 
 def resize_to_square(
@@ -87,14 +87,14 @@ def resize_to_square(
         new_height = int(size / aspect_ratio)
         resized = cv2.resize(image, (new_width, new_height))
         y_offset = (size - new_height) // 2
-        output[y_offset:y_offset + new_height, :] = resized
+        output[y_offset : y_offset + new_height, :] = resized
     else:
         # 縦長または正方形
         new_height = size
         new_width = int(size * aspect_ratio)
         resized = cv2.resize(image, (new_width, new_height))
         x_offset = (size - new_width) // 2
-        output[:, x_offset:x_offset + new_width] = resized
+        output[:, x_offset : x_offset + new_width] = resized
 
     return output
 
@@ -190,13 +190,15 @@ def main():
     )
 
     parser.add_argument(
-        "-i", "--input-dir",
+        "-i",
+        "--input-dir",
         type=Path,
         default=Path.cwd(),
         help="入力画像のディレクトリ（デフォルト: カレントディレクトリ）",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         type=Path,
         default=None,
         help="出力ディレクトリ（デフォルト: ./comp）",

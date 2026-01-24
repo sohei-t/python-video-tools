@@ -64,8 +64,10 @@ def get_video_info(ffprobe_path: str, video_path: Path) -> dict:
     """動画情報を取得"""
     command = [
         ffprobe_path,
-        "-v", "quiet",
-        "-print_format", "json",
+        "-v",
+        "quiet",
+        "-print_format",
+        "json",
         "-show_streams",
         str(video_path),
     ]
@@ -73,6 +75,7 @@ def get_video_info(ffprobe_path: str, video_path: Path) -> dict:
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         import json
+
         data = json.loads(result.stdout)
 
         info = {"fps": None, "has_audio": False}
@@ -131,32 +134,44 @@ def change_video_speed(
     command = [
         ffmpeg_path,
         "-y",
-        "-i", str(input_file),
+        "-i",
+        str(input_file),
     ]
 
     if audio_mode == "remove":
         # 音声を削除
-        command.extend([
-            "-filter:v", video_filter,
-            "-an",
-        ])
+        command.extend(
+            [
+                "-filter:v",
+                video_filter,
+                "-an",
+            ]
+        )
     elif audio_mode == "adjust":
         # 音声も速度を調整
         # atempo は 0.5〜2.0 の範囲のみサポート
         # 範囲外の場合は複数回適用が必要
         audio_filter = build_atempo_filter(speed)
-        command.extend([
-            "-filter_complex",
-            f"[0:v]{video_filter}[v];[0:a]{audio_filter}[a]",
-            "-map", "[v]",
-            "-map", "[a]",
-        ])
+        command.extend(
+            [
+                "-filter_complex",
+                f"[0:v]{video_filter}[v];[0:a]{audio_filter}[a]",
+                "-map",
+                "[v]",
+                "-map",
+                "[a]",
+            ]
+        )
     else:  # copy
         # 音声はそのままコピー（動画と同期しなくなる可能性あり）
-        command.extend([
-            "-filter:v", video_filter,
-            "-c:a", "copy",
-        ])
+        command.extend(
+            [
+                "-filter:v",
+                video_filter,
+                "-c:a",
+                "copy",
+            ]
+        )
 
     command.append(str(output_file))
 
@@ -175,8 +190,10 @@ def change_video_speed(
             command_no_audio = [
                 ffmpeg_path,
                 "-y",
-                "-i", str(input_file),
-                "-filter:v", video_filter,
+                "-i",
+                str(input_file),
+                "-filter:v",
+                video_filter,
                 "-an",
                 str(output_file),
             ]
@@ -242,13 +259,15 @@ def main():
         help="入力ファイルまたはディレクトリ",
     )
     parser.add_argument(
-        "-i", "--input-dir",
+        "-i",
+        "--input-dir",
         type=Path,
         default=None,
         help="入力ディレクトリ",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         type=Path,
         default=None,
         help="出力ディレクトリ（デフォルト: ./output）",

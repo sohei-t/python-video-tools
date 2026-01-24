@@ -64,9 +64,7 @@ def find_ffprobe() -> str:
         if os.path.isfile(path):
             return path
 
-    raise FileNotFoundError(
-        "ffprobeが見つかりません。ffmpegをインストールしてください。"
-    )
+    raise FileNotFoundError("ffprobeが見つかりません。ffmpegをインストールしてください。")
 
 
 def parse_duration(duration_str: str) -> float:
@@ -94,9 +92,12 @@ def get_video_duration(ffprobe_path: str, video_path: Path) -> float:
     """動画の長さを取得（秒）"""
     cmd = [
         ffprobe_path,
-        "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
         str(video_path),
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -167,10 +168,14 @@ def split_video(
         cmd = [
             ffmpeg_path,
             "-y",
-            "-ss", str(current_time),
-            "-i", str(video_path),
-            "-t", str(segment_duration),
-            "-c", "copy",
+            "-ss",
+            str(current_time),
+            "-i",
+            str(video_path),
+            "-t",
+            str(segment_duration),
+            "-c",
+            "copy",
             str(output_file),
         ]
 
@@ -209,19 +214,22 @@ def main():
     )
 
     parser.add_argument(
-        "-d", "--duration",
+        "-d",
+        "--duration",
         type=str,
         required=True,
         help="分割時間間隔 (HH:MM:SS形式)",
     )
     parser.add_argument(
-        "-i", "--input",
+        "-i",
+        "--input",
         type=Path,
         default=None,
         help="入力動画ファイルまたはディレクトリ (デフォルト: カレントディレクトリ)",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         type=Path,
         default=None,
         help="出力ディレクトリ (デフォルト: 入力と同じディレクトリ)",

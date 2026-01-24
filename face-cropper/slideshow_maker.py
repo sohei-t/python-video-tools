@@ -73,7 +73,10 @@ def resize_and_pad(
 
     padded = cv2.copyMakeBorder(
         resized,
-        pad_top, pad_bottom, pad_left, pad_right,
+        pad_top,
+        pad_bottom,
+        pad_left,
+        pad_right,
         cv2.BORDER_CONSTANT,
         value=background_color,
     )
@@ -158,13 +161,15 @@ def main():
     )
 
     parser.add_argument(
-        "-i", "--input-dir",
+        "-i",
+        "--input-dir",
         type=Path,
         default=Path.cwd(),
         help="入力画像のディレクトリ（デフォルト: カレントディレクトリ）",
     )
     parser.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         type=Path,
         default=None,
         help="出力動画ファイル（デフォルト: slideshow_YYYYMMDD_HHMM.mp4）",

@@ -68,9 +68,11 @@ def remove_audio(
     command = [
         ffmpeg_path,
         "-y",
-        "-i", str(input_file),
+        "-i",
+        str(input_file),
         "-an",  # 音声トラックを除去
-        "-c:v", "copy",  # 映像は再エンコードせずコピー
+        "-c:v",
+        "copy",  # 映像は再エンコードせずコピー
         str(output_file),
     ]
 
@@ -128,13 +130,15 @@ def main():
         help="入力ファイルまたはディレクトリ",
     )
     parser.add_argument(
-        "-i", "--input-dir",
+        "-i",
+        "--input-dir",
         type=Path,
         default=None,
         help="入力ディレクトリ",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         type=Path,
         default=None,
         help="出力ディレクトリ（デフォルト: 入力と同じ場所）",
@@ -218,7 +222,9 @@ def main():
 
         # 入力と出力が同じ場合はスキップ
         if output_file.resolve() == video_file.resolve():
-            print("  エラー: 入力と出力が同じファイルです。--suffix または --prefix を指定してください")
+            print(
+                "  エラー: 入力と出力が同じファイルです。--suffix または --prefix を指定してください"
+            )
             fail_count += 1
             continue
 

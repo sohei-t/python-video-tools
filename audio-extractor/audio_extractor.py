@@ -73,9 +73,11 @@ def extract_audio(
     command = [
         ffmpeg_path,
         "-y",
-        "-i", str(input_file),
+        "-i",
+        str(input_file),
         "-vn",
-        "-acodec", "libmp3lame",
+        "-acodec",
+        "libmp3lame",
     ]
 
     if bitrate:
@@ -126,13 +128,15 @@ def main():
         help="入力ファイルまたはディレクトリ",
     )
     parser.add_argument(
-        "-i", "--input-dir",
+        "-i",
+        "--input-dir",
         type=Path,
         default=None,
         help="入力ディレクトリ（位置引数がない場合に使用）",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         type=Path,
         default=None,
         help="出力ディレクトリ（デフォルト: 入力と同じ場所）",

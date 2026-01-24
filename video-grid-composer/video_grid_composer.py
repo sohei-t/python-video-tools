@@ -102,9 +102,7 @@ def compose_horizontal(
     output_frames = max(v["frame_count"] for v in video_infos)
 
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    writer = cv2.VideoWriter(
-        str(output_path), fourcc, output_fps, (output_width, output_height)
-    )
+    writer = cv2.VideoWriter(str(output_path), fourcc, output_fps, (output_width, output_height))
 
     print(f"出力設定: {output_width}x{output_height}, {output_fps}fps, {output_frames}フレーム")
 
@@ -152,9 +150,7 @@ def compose_vertical(
     output_frames = max(v["frame_count"] for v in video_infos)
 
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    writer = cv2.VideoWriter(
-        str(output_path), fourcc, output_fps, (output_width, output_height)
-    )
+    writer = cv2.VideoWriter(str(output_path), fourcc, output_fps, (output_width, output_height))
 
     print(f"出力設定: {output_width}x{output_height}, {output_fps}fps, {output_frames}フレーム")
 
@@ -206,9 +202,7 @@ def compose_grid(
     output_frames = max(v["frame_count"] for v in video_infos)
 
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    writer = cv2.VideoWriter(
-        str(output_path), fourcc, output_fps, (output_width, output_height)
-    )
+    writer = cv2.VideoWriter(str(output_path), fourcc, output_fps, (output_width, output_height))
 
     print(f"出力設定: {output_width}x{output_height} ({cols}x{rows}グリッド), {output_fps}fps")
 
@@ -282,31 +276,36 @@ def main():
     # レイアウト選択（排他的）
     layout_group = parser.add_mutually_exclusive_group()
     layout_group.add_argument(
-        "--horizontal", "-H",
+        "--horizontal",
+        "-H",
         action="store_true",
         help="横並びで結合（デフォルト）",
     )
     layout_group.add_argument(
-        "--vertical", "-V",
+        "--vertical",
+        "-V",
         action="store_true",
         help="縦並びで結合",
     )
     layout_group.add_argument(
-        "--grid", "-G",
+        "--grid",
+        "-G",
         type=str,
         metavar="COLSxROWS",
         help="グリッド状に結合（例: 2x2, 3x2）",
     )
 
     parser.add_argument(
-        "-i", "--input",
+        "-i",
+        "--input",
         nargs="+",
         type=Path,
         default=None,
         help="入力動画ファイル（指定しない場合はカレントディレクトリの動画）",
     )
     parser.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         type=Path,
         default=None,
         help="出力ファイル名（デフォルト: combined_YYYYMMDD.mp4）",

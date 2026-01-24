@@ -174,19 +174,22 @@ def main():
         help="結合する画像ファイル",
     )
     parser.add_argument(
-        "-i", "--input-dir",
+        "-i",
+        "--input-dir",
         type=Path,
         default=None,
         help="入力ディレクトリ（画像を自動収集）",
     )
     parser.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         type=Path,
         default=None,
         help="出力ファイル名（デフォルト: combined_image.jpg）",
     )
     parser.add_argument(
-        "-v", "--vertical",
+        "-v",
+        "--vertical",
         action="store_true",
         help="縦並びで結合（デフォルト: 横並び）",
     )

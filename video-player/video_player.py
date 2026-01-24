@@ -24,9 +24,9 @@ import webbrowser
 from threading import Thread
 
 try:
-    from flask import Flask, render_template_string, send_from_directory, jsonify, send_file
-    from PIL import Image, ImageDraw
     import cv2
+    from flask import Flask, jsonify, render_template_string, send_file, send_from_directory
+    from PIL import Image, ImageDraw
 except ImportError as e:
     print(f"エラー: 必要なライブラリがインストールされていません: {e}")
     print("インストール: pip install flask pillow opencv-python")
@@ -41,7 +41,7 @@ app = Flask(__name__)
 class Config:
     upload_folder = os.getcwd()
     thumbnail_dir = None
-    thumbnail_prefix = 'thumb_'
+    thumbnail_prefix = "thumb_"
     max_content_length = 1024 * 1024 * 1024  # 1GB
 
 
@@ -50,16 +50,18 @@ config = Config()
 
 def get_video_files():
     """指定ディレクトリから動画ファイルを取得"""
-    video_extensions = ['.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv', '.m4v']
+    video_extensions = [".mp4", ".avi", ".mov", ".mkv", ".webm", ".flv", ".wmv", ".m4v"]
     video_files = []
 
     for ext in video_extensions:
-        pattern = os.path.join(config.upload_folder, f'*{ext}')
+        pattern = os.path.join(config.upload_folder, f"*{ext}")
         found_files = glob.glob(pattern)
         video_files.extend([os.path.basename(f) for f in found_files])
 
     # thumbnailsフォルダ内のファイルを除外
-    video_files = [f for f in video_files if not f.startswith(('templates', 'static', 'thumbnails'))]
+    video_files = [
+        f for f in video_files if not f.startswith(("templates", "static", "thumbnails"))
+    ]
     video_files.sort()
     return video_files
 
@@ -99,7 +101,7 @@ def generate_thumbnail(video_path, force=False):
         print(f"サムネイル生成エラー: {e}")
         return None
     finally:
-        if 'cap' in locals() and cap is not None:
+        if "cap" in locals() and cap is not None:
             cap.release()
 
 
@@ -122,7 +124,7 @@ def check_and_generate_thumbnails():
 
 
 # HTMLテンプレート
-HTML_TEMPLATE = '''<!DOCTYPE html>
+HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -273,34 +275,36 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         });
     </script>
 </body>
-</html>'''
+</html>"""
 
 
-@app.route('/')
+@app.route("/")
 def index():
     return render_template_string(HTML_TEMPLATE)
 
 
-@app.route('/videos')
+@app.route("/videos")
 def get_videos():
     video_files = get_video_files()
     videos = []
     for idx, video in enumerate(video_files):
-        videos.append({
-            'id': idx,
-            'name': video,
-            'path': f'/video/{video}',
-            'thumbnail': f'/thumbnail/{video}'
-        })
+        videos.append(
+            {
+                "id": idx,
+                "name": video,
+                "path": f"/video/{video}",
+                "thumbnail": f"/thumbnail/{video}",
+            }
+        )
     return jsonify(videos)
 
 
-@app.route('/video/<path:filename>')
+@app.route("/video/<path:filename>")
 def serve_video(filename):
     return send_from_directory(config.upload_folder, filename)
 
 
-@app.route('/thumbnail/<path:filename>')
+@app.route("/thumbnail/<path:filename>")
 def serve_thumbnail(filename):
     thumbnail_path = get_thumbnail_path(filename)
     if os.path.exists(thumbnail_path):
@@ -308,15 +312,15 @@ def serve_thumbnail(filename):
     return create_placeholder()
 
 
-@app.route('/placeholder')
+@app.route("/placeholder")
 def create_placeholder():
-    img = Image.new('RGB', (240, 135), color=(22, 33, 62))
+    img = Image.new("RGB", (240, 135), color=(22, 33, 62))
     draw = ImageDraw.Draw(img)
     draw.text((80, 60), "No Preview", fill=(233, 69, 96))
     img_io = io.BytesIO()
-    img.save(img_io, 'JPEG')
+    img.save(img_io, "JPEG")
     img_io.seek(0)
-    return send_file(img_io, mimetype='image/jpeg')
+    return send_file(img_io, mimetype="image/jpeg")
 
 
 def open_browser(url, delay=1.5):
@@ -347,13 +351,15 @@ def main():
     )
 
     parser.add_argument(
-        "-d", "--directory",
+        "-d",
+        "--directory",
         type=str,
         default=os.getcwd(),
         help="動画ファイルのあるディレクトリ（デフォルト: カレントディレクトリ）",
     )
     parser.add_argument(
-        "-p", "--port",
+        "-p",
+        "--port",
         type=int,
         default=8080,
         help="サーバーのポート番号（デフォルト: 8080）",
@@ -374,7 +380,7 @@ def main():
 
     # 設定を更新
     config.upload_folder = os.path.abspath(args.directory)
-    config.thumbnail_dir = os.path.join(config.upload_folder, 'thumbnails')
+    config.thumbnail_dir = os.path.join(config.upload_folder, "thumbnails")
     os.makedirs(config.thumbnail_dir, exist_ok=True)
 
     if not os.path.isdir(config.upload_folder):
@@ -415,5 +421,5 @@ def main():
             raise
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -36,17 +36,17 @@ def parse_time(time_str: str) -> float:
     time_str = time_str.strip()
 
     # 秒のみ（例: 90, 90.5）
-    if re.match(r'^[\d.]+$', time_str):
+    if re.match(r"^[\d.]+$", time_str):
         return float(time_str)
 
     # MM:SS形式（例: 01:30）
-    match = re.match(r'^(\d+):(\d+(?:\.\d+)?)$', time_str)
+    match = re.match(r"^(\d+):(\d+(?:\.\d+)?)$", time_str)
     if match:
         m, s = match.groups()
         return int(m) * 60 + float(s)
 
     # HH:MM:SS形式（例: 00:01:30）
-    match = re.match(r'^(\d+):(\d+):(\d+(?:\.\d+)?)$', time_str)
+    match = re.match(r"^(\d+):(\d+):(\d+(?:\.\d+)?)$", time_str)
     if match:
         h, m, s = match.groups()
         return int(h) * 3600 + int(m) * 60 + float(s)
@@ -227,13 +227,15 @@ config.txtを使用する場合:
         help="入力ファイルまたはディレクトリ",
     )
     parser.add_argument(
-        "-i", "--input-dir",
+        "-i",
+        "--input-dir",
         type=Path,
         default=None,
         help="入力ディレクトリ",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         type=Path,
         default=None,
         help="出力ディレクトリ（デフォルト: ./comp）",

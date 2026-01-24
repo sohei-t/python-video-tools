@@ -22,9 +22,9 @@ from typing import Optional, Tuple
 
 try:
     from moviepy.editor import (
-        VideoFileClip,
-        ImageClip,
         CompositeVideoClip,
+        ImageClip,
+        VideoFileClip,
         concatenate_videoclips,
     )
 except ImportError:
@@ -183,7 +183,9 @@ def overlay_video_on_video(
         sub_video = sub_video.subclip(0, main_video.duration)
 
         # 位置を計算
-        x, y = get_position_coords(position, (main_video.w, main_video.h), (sub_video.w, sub_video.h), margin)
+        x, y = get_position_coords(
+            position, (main_video.w, main_video.h), (sub_video.w, sub_video.h), margin
+        )
         sub_video = sub_video.set_position((x, y))
 
         # 合成
@@ -241,26 +243,30 @@ def main():
         help="オーバーレイする画像または動画ファイル",
     )
     parser.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         type=Path,
         default=None,
         help="出力ファイル名（デフォルト: {入力}_overlay.mp4）",
     )
     parser.add_argument(
-        "-p", "--position",
+        "-p",
+        "--position",
         type=str,
         default="top-right",
         choices=list(POSITIONS.keys()),
         help="オーバーレイの位置（デフォルト: top-right）",
     )
     parser.add_argument(
-        "-s", "--size",
+        "-s",
+        "--size",
         type=float,
         default=30,
         help="オーバーレイのサイズ（メイン動画に対する%%、デフォルト: 30）",
     )
     parser.add_argument(
-        "-m", "--margin",
+        "-m",
+        "--margin",
         type=int,
         default=10,
         help="端からの余白（ピクセル、デフォルト: 10）",

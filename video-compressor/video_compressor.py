@@ -96,12 +96,18 @@ def compress_video(
         split_cmd = [
             ffmpeg_path,
             "-y",
-            "-i", str(input_path),
-            "-c", "copy",
-            "-map", "0",
-            "-segment_time", str(segment_seconds),
-            "-f", "segment",
-            "-reset_timestamps", "1",
+            "-i",
+            str(input_path),
+            "-c",
+            "copy",
+            "-map",
+            "0",
+            "-segment_time",
+            str(segment_seconds),
+            "-f",
+            "segment",
+            "-reset_timestamps",
+            "1",
             str(segment_pattern),
         ]
 
@@ -135,13 +141,20 @@ def compress_video(
             compress_cmd = [
                 ffmpeg_path,
                 "-y",
-                "-i", str(segment),
-                "-vf", scale_filter,
-                "-vcodec", "libx264",
-                "-crf", str(crf),
-                "-preset", preset,
-                "-acodec", "aac",
-                "-b:a", "128k",
+                "-i",
+                str(segment),
+                "-vf",
+                scale_filter,
+                "-vcodec",
+                "libx264",
+                "-crf",
+                str(crf),
+                "-preset",
+                preset,
+                "-acodec",
+                "aac",
+                "-b:a",
+                "128k",
                 str(compressed_path),
             ]
 
@@ -170,10 +183,14 @@ def compress_video(
         concat_cmd = [
             ffmpeg_path,
             "-y",
-            "-f", "concat",
-            "-safe", "0",
-            "-i", str(concat_list),
-            "-c", "copy",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            str(concat_list),
+            "-c",
+            "copy",
             str(output_path),
         ]
 
@@ -218,14 +235,16 @@ preset:
     )
 
     parser.add_argument(
-        "-i", "--input",
+        "-i",
+        "--input",
         nargs="+",
         type=Path,
         default=None,
         help="入力動画ファイル（指定しない場合はカレントディレクトリの動画）",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         type=Path,
         default=None,
         help="出力ディレクトリ（デフォルト: ./comp）",
@@ -246,8 +265,17 @@ preset:
         "--preset",
         type=str,
         default="fast",
-        choices=["ultrafast", "superfast", "veryfast", "faster", "fast",
-                 "medium", "slow", "slower", "veryslow"],
+        choices=[
+            "ultrafast",
+            "superfast",
+            "veryfast",
+            "faster",
+            "fast",
+            "medium",
+            "slow",
+            "slower",
+            "veryslow",
+        ],
         help="エンコードプリセット（デフォルト: fast）",
     )
     parser.add_argument(
@@ -346,7 +374,9 @@ preset:
             total_compressed_size += compressed_size
             ratio = (1 - compressed_size / original_size) * 100
 
-            print(f"  完了: {format_size(original_size)} → {format_size(compressed_size)} ({ratio:.1f}%削減)")
+            print(
+                f"  完了: {format_size(original_size)} → {format_size(compressed_size)} ({ratio:.1f}%削減)"
+            )
 
             # 元ファイルを移動
             if args.move_original:
@@ -364,7 +394,9 @@ preset:
     print(f"完了: {success_count}/{len(video_files)} ファイル")
     if total_original_size > 0 and total_compressed_size > 0:
         total_ratio = (1 - total_compressed_size / total_original_size) * 100
-        print(f"合計: {format_size(total_original_size)} → {format_size(total_compressed_size)} ({total_ratio:.1f}%削減)")
+        print(
+            f"合計: {format_size(total_original_size)} → {format_size(total_compressed_size)} ({total_ratio:.1f}%削減)"
+        )
 
 
 if __name__ == "__main__":
