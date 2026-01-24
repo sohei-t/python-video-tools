@@ -10,6 +10,7 @@
 | [video-grid-composer](./video-grid-composer/) | 複数動画の横並び・縦並び・グリッド結合ツール |
 | [video-compressor](./video-compressor/) | 動画ファイルサイズ縮小ツール |
 | [face-cropper](./face-cropper/) | 画像から顔を検出・切り出し＆スライドショー作成ツール |
+| [audio-extractor](./audio-extractor/) | 動画から音声を抽出してMP3に変換するツール |
 
 ## 必要条件
 
