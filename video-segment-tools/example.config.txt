@@ -1,0 +1,11 @@
+# Video Segment Extractor 設定ファイル
+#
+# 書式: key=value
+# 時間形式: MM:SS または HH:MM:SS
+# 複数の範囲はカンマ区切り
+
+# 切り出し時間範囲（開始-終了）
+start_end_times=01:00-01:30,02:15-02:45,05:00-05:30
+
+# 出力ディレクトリ（カレントディレクトリからの相対パス）
+output_dir=segments
