@@ -15,101 +15,17 @@ Requirements:
 Original: 60fpsを30fpsに変換.ipynb
 """
 
+from __future__ import annotations
+
 import argparse
-import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Optional
 
+# Add parent directory to path for common module imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-def find_ffmpeg() -> Optional[str]:
-    """ffmpegのパスを検出"""
-    ffmpeg_path = shutil.which("ffmpeg")
-    if ffmpeg_path:
-        return ffmpeg_path
-
-    common_paths = [
-        "/usr/local/bin/ffmpeg",
-        "/opt/homebrew/bin/ffmpeg",
-        "/usr/bin/ffmpeg",
-    ]
-    for path in common_paths:
-        if os.path.isfile(path):
-            return path
-
-    return None
-
-
-def find_ffprobe() -> Optional[str]:
-    """ffprobeのパスを検出"""
-    ffprobe_path = shutil.which("ffprobe")
-    if ffprobe_path:
-        return ffprobe_path
-
-    common_paths = [
-        "/usr/local/bin/ffprobe",
-        "/opt/homebrew/bin/ffprobe",
-        "/usr/bin/ffprobe",
-    ]
-    for path in common_paths:
-        if os.path.isfile(path):
-            return path
-
-    return None
-
-
-def get_video_info(ffprobe_path: str, video_path: Path) -> dict:
-    """動画情報を取得"""
-    command = [
-        ffprobe_path,
-        "-v",
-        "quiet",
-        "-print_format",
-        "json",
-        "-show_streams",
-        str(video_path),
-    ]
-
-    try:
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-        import json
-
-        data = json.loads(result.stdout)
-
-        info = {"fps": None, "has_audio": False}
-
-        for stream in data.get("streams", []):
-            if stream.get("codec_type") == "video":
-                # FPSを取得
-                fps_str = stream.get("r_frame_rate", "0/1")
-                if "/" in fps_str:
-                    num, den = fps_str.split("/")
-                    info["fps"] = float(num) / float(den) if float(den) > 0 else 0
-            elif stream.get("codec_type") == "audio":
-                info["has_audio"] = True
-
-        return info
-    except Exception:
-        return {"fps": None, "has_audio": False}
-
-
-def get_video_files(path: Path) -> List[Path]:
-    """指定パスから動画ファイルを取得"""
-    extensions = {".mp4", ".avi", ".mkv", ".mov", ".flv", ".wmv", ".webm", ".m4v"}
-
-    if path.is_file():
-        if path.suffix.lower() in extensions:
-            return [path]
-        return []
-
-    videos = []
-    for file in path.iterdir():
-        if file.is_file() and file.suffix.lower() in extensions:
-            videos.append(file)
-
-    return sorted(videos)
+from common.utils import FFmpegLocator, FFmpegRunner, MediaFileValidator
 
 
 def change_video_speed(
@@ -117,7 +33,7 @@ def change_video_speed(
     input_file: Path,
     output_file: Path,
     speed: float,
-    output_fps: Optional[int],
+    output_fps: int | None,
     audio_mode: str = "adjust",
 ) -> bool:
     """動画の速度を変更"""
@@ -312,13 +228,13 @@ def main():
     args = parser.parse_args()
 
     # ffmpegを検出
-    ffmpeg_path = args.ffmpeg or find_ffmpeg()
+    ffmpeg_path = args.ffmpeg or FFmpegLocator.find_ffmpeg()
     if not ffmpeg_path:
         print("エラー: ffmpegが見つかりません")
         print("インストール: brew install ffmpeg (macOS)")
         sys.exit(1)
 
-    ffprobe_path = find_ffprobe()
+    ffmpeg_runner = FFmpegRunner(ffmpeg_path=ffmpeg_path)
 
     # 音声モード
     audio_mode = "remove" if args.no_audio else args.audio
@@ -331,14 +247,14 @@ def main():
             if not input_path.exists():
                 print(f"警告: ファイルが見つかりません: {input_path}")
                 continue
-            video_files.extend(get_video_files(input_path))
+            video_files.extend(MediaFileValidator.get_video_files(input_path))
     elif args.input_dir:
         if not args.input_dir.exists():
             print(f"エラー: ディレクトリが存在しません: {args.input_dir}")
             sys.exit(1)
-        video_files = get_video_files(args.input_dir)
+        video_files = MediaFileValidator.get_video_files(args.input_dir)
     else:
-        video_files = get_video_files(Path.cwd())
+        video_files = MediaFileValidator.get_video_files(Path.cwd())
 
     if not video_files:
         print("エラー: 動画ファイルが見つかりません")
@@ -373,8 +289,8 @@ def main():
         print(f"[{i+1}/{len(video_files)}] {video_file.name}")
 
         # 元の動画情報を取得
-        if ffprobe_path:
-            info = get_video_info(ffprobe_path, video_file)
+        if ffmpeg_runner.ffprobe:
+            info = ffmpeg_runner.get_video_info(str(video_file))
             if info["fps"]:
                 print(f"  元FPS: {info['fps']:.2f}")
 

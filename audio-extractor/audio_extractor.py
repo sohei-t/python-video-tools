@@ -15,58 +15,24 @@ Requirements:
 Original: 動画からmp3抽出.py
 """
 
+from __future__ import annotations
+
 import argparse
-import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Optional
 
+# Add parent directory to path for common module imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-def find_ffmpeg() -> Optional[str]:
-    """ffmpegのパスを検出"""
-    # 環境のPATHから検索
-    ffmpeg_path = shutil.which("ffmpeg")
-    if ffmpeg_path:
-        return ffmpeg_path
-
-    # よくあるインストール場所を確認
-    common_paths = [
-        "/usr/local/bin/ffmpeg",
-        "/opt/homebrew/bin/ffmpeg",
-        "/usr/bin/ffmpeg",
-    ]
-    for path in common_paths:
-        if os.path.isfile(path):
-            return path
-
-    return None
-
-
-def get_video_files(path: Path) -> List[Path]:
-    """指定パスから動画ファイルを取得"""
-    extensions = {".mp4", ".avi", ".mkv", ".mov", ".flv", ".wmv", ".webm", ".m4v"}
-
-    if path.is_file():
-        if path.suffix.lower() in extensions:
-            return [path]
-        return []
-
-    # ディレクトリの場合
-    videos = []
-    for file in path.iterdir():
-        if file.is_file() and file.suffix.lower() in extensions:
-            videos.append(file)
-
-    return sorted(videos)
+from common.utils import FFmpegLocator, MediaFileValidator
 
 
 def extract_audio(
     ffmpeg_path: str,
     input_file: Path,
     output_file: Path,
-    bitrate: Optional[int] = None,
+    bitrate: int | None = None,
     quality: int = 2,
 ) -> bool:
     """動画から音声を抽出"""
@@ -165,7 +131,7 @@ def main():
     args = parser.parse_args()
 
     # ffmpegを検出
-    ffmpeg_path = args.ffmpeg or find_ffmpeg()
+    ffmpeg_path = args.ffmpeg or FFmpegLocator.find_ffmpeg()
     if not ffmpeg_path:
         print("エラー: ffmpegが見つかりません")
         print("インストール: brew install ffmpeg (macOS)")
@@ -180,15 +146,15 @@ def main():
             if not input_path.exists():
                 print(f"警告: ファイルが見つかりません: {input_path}")
                 continue
-            video_files.extend(get_video_files(input_path))
+            video_files.extend(MediaFileValidator.get_video_files(input_path))
     elif args.input_dir:
         if not args.input_dir.exists():
             print(f"エラー: ディレクトリが存在しません: {args.input_dir}")
             sys.exit(1)
-        video_files = get_video_files(args.input_dir)
+        video_files = MediaFileValidator.get_video_files(args.input_dir)
     else:
         # カレントディレクトリから検索
-        video_files = get_video_files(Path.cwd())
+        video_files = MediaFileValidator.get_video_files(Path.cwd())
 
     if not video_files:
         print("エラー: 動画ファイルが見つかりません")

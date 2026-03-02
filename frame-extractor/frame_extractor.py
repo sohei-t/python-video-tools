@@ -15,13 +15,18 @@ Requirements:
 Original: 画像キャプチャ.py
 """
 
+from __future__ import annotations
+
 import argparse
-import os
 import re
 import shutil
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple
+
+# Add parent directory to path for common module imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from common.utils import MediaFileValidator, MediaFormatter
 
 try:
     import cv2
@@ -54,7 +59,7 @@ def parse_time(time_str: str) -> float:
     raise ValueError(f"無効な時間形式: {time_str}")
 
 
-def parse_range(range_str: str) -> Tuple[float, float]:
+def parse_range(range_str: str) -> tuple[float, float]:
     """時間範囲を解析（例: 00:01:00-00:02:00）"""
     # 区切り文字を正規化
     range_str = range_str.replace("--", "-").strip()
@@ -76,9 +81,9 @@ def parse_range(range_str: str) -> Tuple[float, float]:
     raise ValueError(f"無効な範囲形式: {range_str}")
 
 
-def parse_ranges(ranges_str: str) -> List[Tuple[float, float]]:
+def parse_ranges(ranges_str: str) -> list[tuple[float, float]]:
     """複数の時間範囲を解析（カンマ区切り）"""
-    ranges = []
+    ranges: list[tuple[float, float]] = []
     for part in ranges_str.split(","):
         part = part.strip()
         if part:
@@ -87,28 +92,8 @@ def parse_ranges(ranges_str: str) -> List[Tuple[float, float]]:
 
 
 def format_time(seconds: float) -> str:
-    """秒を時間文字列に変換"""
-    h = int(seconds // 3600)
-    m = int((seconds % 3600) // 60)
-    s = seconds % 60
-    return f"{h:02d}:{m:02d}:{s:05.2f}"
-
-
-def get_video_files(path: Path) -> List[Path]:
-    """指定パスから動画ファイルを取得"""
-    extensions = {".mp4", ".avi", ".mkv", ".mov", ".flv", ".wmv", ".webm", ".m4v"}
-
-    if path.is_file():
-        if path.suffix.lower() in extensions:
-            return [path]
-        return []
-
-    videos = []
-    for file in path.iterdir():
-        if file.is_file() and file.suffix.lower() in extensions:
-            videos.append(file)
-
-    return sorted(videos)
+    """秒を時間文字列に変換（MediaFormatter.format_durationのエイリアス）"""
+    return MediaFormatter.format_duration(seconds)
 
 
 def read_config(config_path: Path) -> dict:
@@ -131,7 +116,7 @@ def extract_frames(
     video_path: Path,
     output_dir: Path,
     interval: float = 1.0,
-    ranges: Optional[List[Tuple[float, float]]] = None,
+    ranges: list[tuple[float, float]] | None = None,
     format: str = "jpg",
     quality: int = 95,
     prefix: str = "",
@@ -309,14 +294,14 @@ config.txtを使用する場合:
             if not input_path.exists():
                 print(f"警告: ファイルが見つかりません: {input_path}")
                 continue
-            video_files.extend(get_video_files(input_path))
+            video_files.extend(MediaFileValidator.get_video_files(input_path))
     elif args.input_dir:
         if not args.input_dir.exists():
             print(f"エラー: ディレクトリが存在しません: {args.input_dir}")
             sys.exit(1)
-        video_files = get_video_files(args.input_dir)
+        video_files = MediaFileValidator.get_video_files(args.input_dir)
     else:
-        video_files = get_video_files(Path.cwd())
+        video_files = MediaFileValidator.get_video_files(Path.cwd())
 
     if not video_files:
         print("エラー: 動画ファイルが見つかりません")

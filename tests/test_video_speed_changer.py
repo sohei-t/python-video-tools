@@ -7,9 +7,11 @@ from pathlib import Path
 import pytest
 
 # Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
 sys.path.insert(0, str(Path(__file__).parent.parent / "video-speed-changer"))
 
-from video_speed_changer import build_atempo_filter, get_video_files
+from common.utils import MediaFileValidator
+from video_speed_changer import build_atempo_filter
 
 
 class TestBuildAtempoFilter:
@@ -46,7 +48,7 @@ class TestBuildAtempoFilter:
 
 
 class TestGetVideoFiles:
-    """Tests for get_video_files function."""
+    """Tests for MediaFileValidator.get_video_files (used by video_speed_changer)."""
 
     def test_get_from_directory(self):
         """Test getting video files from directory."""
@@ -55,7 +57,7 @@ class TestGetVideoFiles:
             for name in ["video1.mp4", "video2.avi", "doc.txt"]:
                 Path(tmpdir, name).touch()
 
-            videos = get_video_files(Path(tmpdir))
+            videos = MediaFileValidator.get_video_files(Path(tmpdir))
             assert len(videos) == 2
             assert all(f.suffix.lower() in [".mp4", ".avi"] for f in videos)
 
@@ -65,7 +67,7 @@ class TestGetVideoFiles:
             video_path = Path(tmpdir, "video.mp4")
             video_path.touch()
 
-            videos = get_video_files(video_path)
+            videos = MediaFileValidator.get_video_files(video_path)
             assert len(videos) == 1
             assert videos[0] == video_path
 
@@ -75,7 +77,7 @@ class TestGetVideoFiles:
             txt_path = Path(tmpdir, "doc.txt")
             txt_path.touch()
 
-            videos = get_video_files(txt_path)
+            videos = MediaFileValidator.get_video_files(txt_path)
             assert len(videos) == 0
 
     def test_various_extensions(self):
@@ -85,7 +87,7 @@ class TestGetVideoFiles:
             for ext in extensions:
                 Path(tmpdir, f"video{ext}").touch()
 
-            videos = get_video_files(Path(tmpdir))
+            videos = MediaFileValidator.get_video_files(Path(tmpdir))
             assert len(videos) == len(extensions)
 
     def test_sorted_output(self):
@@ -94,7 +96,7 @@ class TestGetVideoFiles:
             for name in ["c.mp4", "a.mp4", "b.mp4"]:
                 Path(tmpdir, name).touch()
 
-            videos = get_video_files(Path(tmpdir))
+            videos = MediaFileValidator.get_video_files(Path(tmpdir))
             assert videos[0].name == "a.mp4"
             assert videos[1].name == "b.mp4"
             assert videos[2].name == "c.mp4"

@@ -6,7 +6,11 @@ readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.9"
 authors = [
-    {name = "sohei-t"}
+    {name = "sohei-t", email = "pontaro.no1@gmail.com"}
+]
+dependencies = [
+    "opencv-python>=4.5",
+    "numpy>=1.20",
 ]
 keywords = [
     "video",
@@ -29,10 +33,25 @@ classifiers = [
     "Topic :: Multimedia :: Video :: Conversion",
 ]
 
+[project.optional-dependencies]
+face = ["dlib>=19.0"]
+overlay = ["moviepy>=1.0"]
+dev = ["pytest>=7.0", "pytest-cov>=4.0"]
+
+[project.scripts]
+audio-extractor = "audio-extractor.audio_extractor:main"
+video-compressor = "video-compressor.video_compressor:main"
+video-speed-changer = "video-speed-changer.video_speed_changer:main"
+frame-extractor = "frame-extractor.frame_extractor:main"
+
 [project.urls]
 Homepage = "https://github.com/sohei-t/python-video-tools"
 Repository = "https://github.com/sohei-t/python-video-tools"
 Issues = "https://github.com/sohei-t/python-video-tools/issues"
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 100

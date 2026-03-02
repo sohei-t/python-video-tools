@@ -11,53 +11,21 @@ Usage:
 Original: size_small.py, size_small_20240730.py
 """
 
+from __future__ import annotations
+
 import argparse
 import configparser
-import os
 import shutil
 import subprocess
 import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
 
+# Add parent directory to path for common module imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-def find_ffmpeg() -> str:
-    """ffmpegのパスを検出"""
-    ffmpeg_env = os.environ.get("FFMPEG_PATH")
-    if ffmpeg_env and os.path.isfile(ffmpeg_env):
-        return ffmpeg_env
-
-    ffmpeg_path = shutil.which("ffmpeg")
-    if ffmpeg_path:
-        return ffmpeg_path
-
-    common_paths = [
-        "/usr/local/bin/ffmpeg",
-        "/usr/bin/ffmpeg",
-        "/opt/homebrew/bin/ffmpeg",
-    ]
-    for path in common_paths:
-        if os.path.isfile(path):
-            return path
-
-    raise FileNotFoundError(
-        "ffmpegが見つかりません。ffmpegをインストールするか、"
-        "FFMPEG_PATH環境変数でパスを指定してください。"
-    )
-
-
-def get_video_files(directory: Path) -> List[Path]:
-    """ディレクトリから動画ファイルを取得"""
-    extensions = {".avi", ".asf", ".mov", ".mpg", ".wmv", ".ogm", ".mp4", ".mkv"}
-    videos = []
-
-    for file in directory.iterdir():
-        if file.is_file() and file.suffix.lower() in extensions:
-            videos.append(file)
-
-    return sorted(videos)
+from common.utils import FFmpegLocator, MediaFileValidator, MediaFormatter
 
 
 def load_config(config_path: Path) -> dict:
@@ -81,7 +49,7 @@ def compress_video(
     output_path: Path,
     crf: int = 28,
     preset: str = "fast",
-    scale: Optional[float] = None,
+    scale: float | None = None,
     segment_seconds: int = 5,
 ) -> bool:
     """動画を圧縮する（分割→圧縮→結合方式）"""
@@ -202,15 +170,6 @@ def compress_video(
     return True
 
 
-def format_size(size_bytes: int) -> str:
-    """バイト数を人間が読みやすい形式に変換"""
-    for unit in ["B", "KB", "MB", "GB"]:
-        if size_bytes < 1024:
-            return f"{size_bytes:.1f} {unit}"
-        size_bytes /= 1024
-    return f"{size_bytes:.1f} TB"
-
-
 def main():
     parser = argparse.ArgumentParser(
         description="動画ファイルを圧縮してファイルサイズを縮小するツール",
@@ -306,7 +265,7 @@ preset:
 
     # ffmpegのパスを取得
     try:
-        ffmpeg_path = args.ffmpeg or find_ffmpeg()
+        ffmpeg_path = args.ffmpeg or FFmpegLocator.require_ffmpeg()
         print(f"ffmpeg: {ffmpeg_path}")
     except FileNotFoundError as e:
         print(f"エラー: {e}")
@@ -324,7 +283,7 @@ preset:
             print("エラー: 指定された動画ファイルが見つかりません")
             sys.exit(1)
     else:
-        video_files = get_video_files(Path.cwd())
+        video_files = MediaFileValidator.get_video_files(Path.cwd())
         if not video_files:
             print("エラー: カレントディレクトリに動画ファイルが見つかりません")
             sys.exit(1)
@@ -375,7 +334,7 @@ preset:
             ratio = (1 - compressed_size / original_size) * 100
 
             print(
-                f"  完了: {format_size(original_size)} → {format_size(compressed_size)} ({ratio:.1f}%削減)"
+                f"  完了: {MediaFormatter.format_size(original_size)} → {MediaFormatter.format_size(compressed_size)} ({ratio:.1f}%削減)"
             )
 
             # 元ファイルを移動
@@ -395,7 +354,7 @@ preset:
     if total_original_size > 0 and total_compressed_size > 0:
         total_ratio = (1 - total_compressed_size / total_original_size) * 100
         print(
-            f"合計: {format_size(total_original_size)} → {format_size(total_compressed_size)} ({total_ratio:.1f}%削減)"
+            f"合計: {MediaFormatter.format_size(total_original_size)} → {MediaFormatter.format_size(total_compressed_size)} ({total_ratio:.1f}%削減)"
         )
 
 
