@@ -6,7 +6,7 @@ readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.9"
 authors = [
-    {name = "sohei-t", email = "pontaro.no1@gmail.com"}
+    {name = "sohei-t"}
 ]
 dependencies = [
     "opencv-python>=4.5",
